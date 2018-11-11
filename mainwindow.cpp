@@ -40,6 +40,7 @@ void MainWindow::endPlay()
 {
     videoTimer->stop();
     m_videoPlaying = false;
+
     m_videoCap.release();
     ui->StartButton->setText("Star");
     ui->StartButton->repaint();
