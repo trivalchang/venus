@@ -60,13 +60,13 @@ void MainWindow::handleButton()
 
 void MainWindow::updateVideoFrame()
 {
-    cv::Mat frame;
-    m_videoCap >> frame;
+
+    m_videoCap >> m_currentVFrame;
 
     printf("updateVideoFrame\n");
-    if (!frame.empty())
+    if (!m_currentVFrame.empty())
     {
-        displayImage(frame);
+        displayImage(m_currentVFrame);
     }
 
     static int elapsed = 0;

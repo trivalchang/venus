@@ -35,6 +35,7 @@ private:
     QTime m_videoElapsedTime;
     bool m_videoPlaying;
     cv::VideoCapture m_videoCap;
+    cv::Mat m_currentVFrame;
 };
 
 #endif // MAINWINDOW_H
