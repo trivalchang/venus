@@ -25,7 +25,6 @@ void MainWindow::startPlay()
     videoTimer->start(100);
     m_videoPlaying = true;
     m_videoCap.open(0);
-    printf("Start Play\n");
     if (!m_videoCap.isOpened())
     {
         printf("Unable to open video\n");
