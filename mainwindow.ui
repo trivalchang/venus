@@ -43,7 +43,7 @@
        <string>Start</string>
       </property>
      </widget>
-     <widget class="QLabel" name="ImageDisplay">
+     <widget class="ImageDisplayLabel" name="ImageDisplay">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -129,6 +129,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ImageDisplayLabel</class>
+   <extends>QLabel</extends>
+   <header>imagedisplaylabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
