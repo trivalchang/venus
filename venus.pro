@@ -30,7 +30,8 @@ PKGCONFIG += opencv
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    imagedisplaylabel.cpp
 
 HEADERS += \
         mainwindow.h \
