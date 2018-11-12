@@ -24,18 +24,25 @@ public:
     void displayImage(cv::Mat img);
     void startPlay();
     void endPlay();
+    void resizeEvent( QResizeEvent *e );
 
 private slots:
-    void handleButton();
+    void handleOpenFileBtn();
+    void handleOpenCameraBtn();
+    void handleSnapshotBtn();
+    void handlePlayBtn();
     void updateVideoFrame();
+    void resizeDone();
 private:
     Ui::MainWindow *ui;
     QTimer *videoTimer;
+    QTimer m_resizeTimer;
     QTime m_videoStartTime;
     QTime m_videoElapsedTime;
     bool m_videoPlaying;
     cv::VideoCapture m_videoCap;
     cv::Mat m_currentVFrame;
+    bool m_videoPaued;
 };
 
 #endif // MAINWINDOW_H

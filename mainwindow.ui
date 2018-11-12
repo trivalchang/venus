@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>20</y>
       <width>811</width>
       <height>511</height>
      </rect>
@@ -30,7 +30,7 @@
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
-     <widget class="QPushButton" name="StartButton">
+     <widget class="QPushButton" name="OpenCameraBtn">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -40,7 +40,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Start</string>
+       <string>Open Camera</string>
       </property>
      </widget>
      <widget class="ImageDisplayLabel" name="ImageDisplay">
@@ -57,6 +57,9 @@
         <pointsize>48</pointsize>
        </font>
       </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="text">
        <string>Video</string>
       </property>
@@ -67,10 +70,10 @@
      <widget class="QLabel" name="videoElapsed">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>680</x>
         <y>440</y>
-        <width>121</width>
-        <height>16</height>
+        <width>111</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
@@ -86,13 +89,64 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>40</y>
+        <y>90</y>
         <width>114</width>
         <height>32</height>
        </rect>
       </property>
       <property name="text">
        <string>snapshot</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="OpenFileBtn">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>114</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Open File</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PlayBtn">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>430</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>TTTT</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>play.png</normaloff>play.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
@@ -117,6 +171,21 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionOpen_Camera"/>
+    <addaction name="actionOpen_File"/>
+   </widget>
+   <widget class="QMenu" name="menu_Setting">
+    <property name="title">
+     <string>&amp;Setting</string>
+    </property>
+    <addaction name="actionCapture_File_Resolution"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Setting"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -127,6 +196,21 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_Camera">
+   <property name="text">
+    <string>Open Camera</string>
+   </property>
+  </action>
+  <action name="actionOpen_File">
+   <property name="text">
+    <string>Open File</string>
+   </property>
+  </action>
+  <action name="actionCapture_File_Resolution">
+   <property name="text">
+    <string>Capture File Resolution</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
