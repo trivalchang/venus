@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->OpenFileBtn, SIGNAL (released()),this, SLOT (handleOpenFileBtn()));
     connect(ui->PlayBtn, SIGNAL (released()),this, SLOT (handlePlayBtn()));
     connect(videoTimer, SIGNAL(timeout()),this, SLOT(updateVideoFrame()));
-    QTimer::singleShot(500, this, SLOT(showFullScreen()));
-    m_resizeTimer.setSingleShot( true );
-    connect( &m_resizeTimer, SIGNAL(timeout()), SLOT(resizeDone()) );
+    //QTimer::singleShot(500, this, SLOT(showFullScreen()));
+    //m_resizeTimer.setSingleShot( true );
+    //connect( &m_resizeTimer, SIGNAL(timeout()), SLOT(resizeDone()) );
 }
 
 MainWindow::~MainWindow()
@@ -90,6 +90,7 @@ void MainWindow::resizeEvent( QResizeEvent *e )
     printf("Resize\n");
     printf("orig window size %d x %d\n", size().width(), size().height());
     ui->tabWidget->resize(w-100, h-100);
+    ui->ImageDisplay->resize(w-100, h-100);
 }
 
 void MainWindow::resizeDone()
@@ -99,9 +100,6 @@ void MainWindow::resizeDone()
     w = size().width();
     h = size().height();
     printf("new window size %d x %d\n", size().width(), size().height());
-
-    ui->ImageDisplay->resize(w-100, h-100);
-
 }
 
 void MainWindow::handleSnapshotBtn()
