@@ -44,6 +44,7 @@ private:
     cv::Mat m_currentVFrame;
     bool m_videoPaued;
     QString m_filePlaying;
+    int m_videoElapsedInMs;
 };
 
 #endif // MAINWINDOW_H

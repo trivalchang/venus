@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(videoTimer, SIGNAL(timeout()),this, SLOT(updateVideoFrame()));
     //QTimer::singleShot(500, this, SLOT(showFullScreen()));
     //m_resizeTimer.setSingleShot( true );
-    //connect( &m_resizeTimer, SIGNAL(timeout()), SLOT(resizeDone()) );
+    connect( &m_resizeTimer, SIGNAL(timeout()), SLOT(resizeDone()) );
 }
 
 MainWindow::~MainWindow()
@@ -49,6 +49,7 @@ void MainWindow::startPlay(QString fname)
     ui->OpenCameraBtn->setText("Stop");
     ui->OpenCameraBtn->repaint();
     m_videoStartTime.start();
+    m_videoElapsedInMs = 0;
     m_videoElapsedTime.setHMS(0, 0, 0);
 }
 
@@ -90,12 +91,24 @@ void MainWindow::resizeEvent( QResizeEvent *e )
 
     m_resizeTimer.start( 500 );
     QMainWindow::resizeEvent(e);
-    ui->tabWidget->resize(w*0.98, h*0.80);
+    ui->tabWidget->resize(w*0.98, h*0.90);
     ui->ImageDisplay->resize(w*0.98, h*0.70);
+
+    QRect geometry = ui->ImageDisplay->geometry();
+
+    //ui->videoElapsed->move(geometry.right()-ui->videoElapsed->width()-10, geometry.bottom()+10);
+    //ui->videoElapsed->move(geometry.right()-400, geometry.bottom()+10);
+    //ui->PlayBtn->move(geometry.left(), geometry.bottom()+10);
 }
 
 void MainWindow::resizeDone()
 {
+    QRect geometry = ui->ImageDisplay->geometry();
+    int w = ui->videoElapsed->width();
+    //ui->videoElapsed->move(geometry.right()-w-10, geometry.bottom()+10);
+    ui->videoElapsed->move(geometry.center().x(), geometry.bottom()+10);
+    //ui->videoElapsed->move(geometry.right()-400, geometry.bottom()+10);
+    ui->PlayBtn->move(geometry.left(), geometry.bottom()+10);
 }
 
 void MainWindow::handleSnapshotBtn()
@@ -105,6 +118,11 @@ void MainWindow::handleSnapshotBtn()
 void MainWindow::handlePlayBtn()
 {
     m_videoPaued = !m_videoPaued;
+    if (m_videoPaued == false)
+    {
+        m_videoStartTime.restart();
+        m_videoElapsedInMs = 0;
+    }
 }
 
 void MainWindow::updateVideoFrame()
@@ -117,19 +135,16 @@ void MainWindow::updateVideoFrame()
     if (!m_currentVFrame.empty())
     {
         displayImage(m_currentVFrame);
+        m_videoElapsedTime = m_videoElapsedTime.addMSecs(m_videoStartTime.elapsed() - m_videoElapsedInMs);
+        m_videoElapsedInMs = m_videoStartTime.elapsed();
+        ui->videoElapsed->setText(m_videoElapsedTime.toString("hh:mm:ss"));
+        ui->videoElapsed->repaint();
     }
-
-    static int elapsed = 0;
-
-    m_videoElapsedTime = m_videoElapsedTime.addMSecs(m_videoStartTime.elapsed() - elapsed);
-    elapsed = m_videoStartTime.elapsed();
-    ui->videoElapsed->setText(m_videoElapsedTime.toString("hh:mm:ss.zzz"));
-    ui->videoElapsed->repaint();
 }
 
 void MainWindow::displayImage(cv::Mat img)
 {
-    int newW, newH;
+    int newW = 0, newH = 0;
     float imgRatio, displayRatio;
 
     imgRatio = float(img.cols)/float(img.rows);
