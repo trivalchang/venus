@@ -25,8 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 QT_CONFIG -= no-pkg-config
-CONFIG  += link_pkgconfig
-PKGCONFIG += opencv
+#CONFIG  += link_pkgconfig
+#PKGCONFIG += opencv
 
 SOURCES += \
         main.cpp \
@@ -39,6 +39,17 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += D:\opencv\opencv\build\include
+
+LIBS += D:\opencv\opencv-build\bin\libopencv_core400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_highgui400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_imgcodecs400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_imgproc400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_features2d400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_calib3d400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_video400.dll
+LIBS += D:\opencv\opencv-build\bin\libopencv_videoio400.dll
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

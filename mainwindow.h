@@ -22,7 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void displayImage(cv::Mat img);
-    void startPlay();
+    void startPlay(QString fname);
     void endPlay();
     void resizeEvent( QResizeEvent *e );
 
@@ -43,6 +43,7 @@ private:
     cv::VideoCapture m_videoCap;
     cv::Mat m_currentVFrame;
     bool m_videoPaued;
+    QString m_filePlaying;
 };
 
 #endif // MAINWINDOW_H

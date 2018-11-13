@@ -28,11 +28,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::startPlay()
+void MainWindow::startPlay(QString fname)
 {
-    videoTimer->start(100);
+    videoTimer->start(10);
     m_videoPlaying = true;
-    m_videoCap.open(0);
+    if (fname == "")
+    {
+        m_videoCap.open(0);
+    }
+    else
+    {
+        m_videoCap.open(fname.toStdString());
+    }
+
     if (!m_videoCap.isOpened())
     {
         printf("Unable to open video\n");
@@ -58,7 +66,7 @@ void MainWindow::handleOpenCameraBtn()
 {
     if (m_videoPlaying == false)
     {
-        startPlay();
+        startPlay("");
     }
     else
     {
@@ -68,14 +76,9 @@ void MainWindow::handleOpenCameraBtn()
 
 void MainWindow::handleOpenFileBtn()
 {
-    if (m_videoPlaying == false)
-    {
-        startPlay();
-    }
-    else
-    {
-        endPlay();
-    }
+    m_filePlaying = QFileDialog::getOpenFileName(this,tr("Open video files"),".",
+                                             "mov (*.mov);;AVI (*.avi);;MP4 (*.MP4)");
+    startPlay(m_filePlaying);
 }
 
 void MainWindow::resizeEvent( QResizeEvent *e )
@@ -87,19 +90,12 @@ void MainWindow::resizeEvent( QResizeEvent *e )
 
     m_resizeTimer.start( 500 );
     QMainWindow::resizeEvent(e);
-    printf("Resize\n");
-    printf("orig window size %d x %d\n", size().width(), size().height());
-    ui->tabWidget->resize(w-100, h-100);
-    ui->ImageDisplay->resize(w-100, h-100);
+    ui->tabWidget->resize(w*0.98, h*0.80);
+    ui->ImageDisplay->resize(w*0.98, h*0.70);
 }
 
 void MainWindow::resizeDone()
 {
-    int w, h;
-
-    w = size().width();
-    h = size().height();
-    printf("new window size %d x %d\n", size().width(), size().height());
 }
 
 void MainWindow::handleSnapshotBtn()
@@ -118,8 +114,6 @@ void MainWindow::updateVideoFrame()
         return;
     }
     m_videoCap >> m_currentVFrame;
-
-    printf("updateVideoFrame\n");
     if (!m_currentVFrame.empty())
     {
         displayImage(m_currentVFrame);
@@ -135,7 +129,29 @@ void MainWindow::updateVideoFrame()
 
 void MainWindow::displayImage(cv::Mat img)
 {
-    cv::resize(img, img, Size(ui->ImageDisplay->size().width(), ui->ImageDisplay->size().height()), 0, 0, INTER_LINEAR);
+    int newW, newH;
+    float imgRatio, displayRatio;
+
+    imgRatio = float(img.cols)/float(img.rows);
+    displayRatio = float(ui->ImageDisplay->size().width())/float(ui->ImageDisplay->size().height());
+    if (imgRatio >= displayRatio)    // image ratio is wider than display widget
+    {
+        newW = ui->ImageDisplay->size().width();
+        newH = int(float(img.rows) * float(newW)/float(img.cols));
+    }
+    else if (imgRatio < displayRatio)
+    {
+        newH = ui->ImageDisplay->size().height();
+        newW = int(float(img.cols) * float(newH)/float(img.rows));
+    }
+
+    if ((newW != ui->ImageDisplay->size().width()) ||
+            (newH != ui->ImageDisplay->size().height()))
+    {
+        ui->ImageDisplay->resize(newW, newH);
+    }
+
+    cv::resize(img, img, Size(newW, newH), 0, 0, INTER_LINEAR);
     cv::cvtColor(img,img,COLOR_BGR2RGB);
     QImage imdisplay((uchar*)img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
     ui->ImageDisplay->setPixmap(QPixmap::fromImage(imdisplay));
