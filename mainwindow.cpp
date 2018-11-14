@@ -172,10 +172,6 @@ void MainWindow::displayImage(cv::Mat img)
     cv::resize(img, img, Size(newW, newH), 0, 0, INTER_LINEAR);
     cv::cvtColor(img,img,COLOR_BGR2RGB);
     QImage imdisplay((uchar*)img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
-    QPainter *paint = new QPainter(&imdisplay);
-    paint->setPen(QPen(Qt::white, 12, Qt::DashDotLine, Qt::RoundCap));
-    paint->drawLine(0, 0, 200, 200);
-    delete paint;
-    ui->ImageDisplay->setPixmap(QPixmap::fromImage(imdisplay));
-    ui->ImageDisplay->repaint();
+
+    ui->ImageDisplay->displayImage(imdisplay);
 }
