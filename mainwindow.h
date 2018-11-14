@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QCursor>
+#include <QVector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -45,6 +46,8 @@ private:
     bool m_videoPaued;
     QString m_filePlaying;
     int m_videoElapsedInMs;
+    QVector<cv::Mat> m_snapshotFrames;
+    QString m_snapshotsTabText;
 };
 
 #endif // MAINWINDOW_H

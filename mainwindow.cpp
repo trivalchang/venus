@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->OpenCameraBtn, SIGNAL (released()),this, SLOT (handleOpenCameraBtn()));
     connect(ui->OpenFileBtn, SIGNAL (released()),this, SLOT (handleOpenFileBtn()));
     connect(ui->PlayBtn, SIGNAL (released()),this, SLOT (handlePlayBtn()));
+    connect(ui->SnapshotBtn, SIGNAL (released()),this, SLOT (handleSnapshotBtn()));
+
     connect(videoTimer, SIGNAL(timeout()),this, SLOT(updateVideoFrame()));
     QTimer::singleShot(500, this, SLOT(showMaximized()));
     //m_resizeTimer.setSingleShot( true );
@@ -24,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setWindowTitle(tr("Window Flags"));
     setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+
+    m_snapshotsTabText = ui->tabWidget->tabText(1);
 }
 
 MainWindow::~MainWindow()
@@ -99,9 +103,6 @@ void MainWindow::resizeEvent( QResizeEvent *e )
 
     QRect geometry = ui->ImageDisplay->geometry();
 
-    //ui->videoElapsed->move(geometry.right()-ui->videoElapsed->width()-10, geometry.bottom()+10);
-    //ui->videoElapsed->move(geometry.right()-400, geometry.bottom()+10);
-    //ui->PlayBtn->move(geometry.left(), geometry.bottom()+10);
 }
 
 void MainWindow::resizeDone()
@@ -116,6 +117,9 @@ void MainWindow::resizeDone()
 
 void MainWindow::handleSnapshotBtn()
 {
+    m_snapshotFrames.push_back(m_currentVFrame);
+    QString title = m_snapshotsTabText + "(" + QString::number(m_snapshotFrames.size()) + ")";
+    ui->tabWidget->setTabText(1, title);
 }
 
 void MainWindow::handlePlayBtn()
