@@ -15,9 +15,10 @@ void ImageDisplayLabel::paintEvent(QPaintEvent *event)
 {
     QPainter paint(this);
     QPoint invalid(-1, -1);
+
     paint.setPen(QPen(Qt::green, 2, Qt::SolidLine, Qt::RoundCap));
     paint.drawPixmap(QPoint(0, 0), QPixmap::fromImage(m_imgToDraw));
-    //paint.drawLine(0, 0, 200, 200);
+
     if ((m_ROIStart==invalid) || (m_ROIEnd==invalid))
     {
         return;
