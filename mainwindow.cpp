@@ -18,9 +18,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->OpenFileBtn, SIGNAL (released()),this, SLOT (handleOpenFileBtn()));
     connect(ui->PlayBtn, SIGNAL (released()),this, SLOT (handlePlayBtn()));
     connect(videoTimer, SIGNAL(timeout()),this, SLOT(updateVideoFrame()));
-    //QTimer::singleShot(500, this, SLOT(showFullScreen()));
+    QTimer::singleShot(500, this, SLOT(showMaximized()));
     //m_resizeTimer.setSingleShot( true );
     connect( &m_resizeTimer, SIGNAL(timeout()), SLOT(resizeDone()) );
+
+    setWindowTitle(tr("Window Flags"));
+    setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 }
 
 MainWindow::~MainWindow()
@@ -169,6 +172,10 @@ void MainWindow::displayImage(cv::Mat img)
     cv::resize(img, img, Size(newW, newH), 0, 0, INTER_LINEAR);
     cv::cvtColor(img,img,COLOR_BGR2RGB);
     QImage imdisplay((uchar*)img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
+    QPainter *paint = new QPainter(&imdisplay);
+    paint->setPen(QPen(Qt::white, 12, Qt::DashDotLine, Qt::RoundCap));
+    paint->drawLine(0, 0, 200, 200);
+    delete paint;
     ui->ImageDisplay->setPixmap(QPixmap::fromImage(imdisplay));
     ui->ImageDisplay->repaint();
 }

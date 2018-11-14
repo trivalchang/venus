@@ -6,3 +6,4 @@ ImageDisplayLabel::ImageDisplayLabel(QWidget *parent, Qt::WindowFlags f)
 {
 
 }
+
