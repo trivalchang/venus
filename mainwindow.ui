@@ -17,25 +17,25 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>791</width>
-      <height>521</height>
+      <x>0</x>
+      <y>0</y>
+      <width>821</width>
+      <height>551</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="CaptureTab">
      <attribute name="title">
       <string>Capture</string>
      </attribute>
      <widget class="QPushButton" name="OpenCameraBtn">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>10</y>
-        <width>114</width>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -46,10 +46,10 @@
      <widget class="ImageDisplayLabel" name="ImageDisplay">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>120</x>
         <y>10</y>
-        <width>551</width>
-        <height>351</height>
+        <width>591</width>
+        <height>431</height>
        </rect>
       </property>
       <property name="font">
@@ -70,8 +70,8 @@
      <widget class="QLabel" name="videoElapsed">
       <property name="geometry">
        <rect>
-        <x>510</x>
-        <y>440</y>
+        <x>360</x>
+        <y>450</y>
         <width>161</width>
         <height>31</height>
        </rect>
@@ -88,9 +88,9 @@
      <widget class="QPushButton" name="SnapshotBtn">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>90</y>
-        <width>114</width>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -101,9 +101,9 @@
      <widget class="QPushButton" name="OpenFileBtn">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>50</y>
-        <width>114</width>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -114,9 +114,9 @@
      <widget class="QPushButton" name="PlayBtn">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>440</y>
-        <width>114</width>
+        <x>10</x>
+        <y>130</y>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -124,8 +124,21 @@
        <string>Play/Pause</string>
       </property>
      </widget>
+     <widget class="QListWidget" name="SnapshotList0">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>10</y>
+        <width>91</width>
+        <height>421</height>
+       </rect>
+      </property>
+      <property name="flow">
+       <enum>QListView::TopToBottom</enum>
+      </property>
+     </widget>
     </widget>
-    <widget class="QWidget" name="ImageEditTab">
+    <widget class="QWidget" name="SnapshutTab">
      <attribute name="title">
       <string>Snapshots</string>
      </attribute>
@@ -153,69 +166,25 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QWidget" name="formLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>390</y>
-        <width>131</width>
-        <height>61</height>
+        <x>70</x>
+        <y>50</y>
+        <width>160</width>
+        <height>80</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Image 0</string>
-      </property>
+      <layout class="QFormLayout" name="formLayout"/>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QListWidget" name="listWidget">
       <property name="geometry">
        <rect>
-        <x>200</x>
-        <y>390</y>
-        <width>131</width>
-        <height>61</height>
+        <x>110</x>
+        <y>391</y>
+        <width>641</width>
+        <height>81</height>
        </rect>
-      </property>
-      <property name="text">
-       <string>Image 0</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>390</y>
-        <width>131</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Image 0</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="geometry">
-       <rect>
-        <x>480</x>
-        <y>390</y>
-        <width>131</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Image 0</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_5">
-      <property name="geometry">
-       <rect>
-        <x>620</x>
-        <y>390</y>
-        <width>131</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Image 0</string>
       </property>
      </widget>
     </widget>
@@ -232,7 +201,7 @@
      <x>0</x>
      <y>0</y>
      <width>827</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

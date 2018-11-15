@@ -35,6 +35,7 @@ private slots:
     void updateVideoFrame();
     void resizeDone();
 private:
+    void relocateWidget(QWidget *widget, QSizeF ratio);
     Ui::MainWindow *ui;
     QTimer *videoTimer;
     QTimer m_resizeTimer;

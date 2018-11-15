@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 
     m_snapshotsTabText = ui->tabWidget->tabText(1);
+    ui->SnapshotList0->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 MainWindow::~MainWindow()
@@ -89,30 +90,59 @@ void MainWindow::handleOpenFileBtn()
     startPlay(m_filePlaying);
 }
 
+void MainWindow::relocateWidget(QWidget *widget, QSizeF ratio)
+{
+    int neww, newh;
+    int newx, newy;
+
+    neww = (int)((qreal)widget->size().width() * ratio.width());
+    newh = (int)((qreal)widget->size().height() * ratio.height());
+    widget->resize(neww, newh);
+    newx = (int)((qreal)widget->pos().x() * ratio.width());
+    newy = (int)((qreal)widget->pos().y() * ratio.height());
+    widget->move(newx, newy);
+}
+
 void MainWindow::resizeEvent( QResizeEvent *e )
 {
-    int w, h;
+    int w, h, oldw, oldh, neww, newh;
+    qreal wratio, hratio;
+
+    if ((e->size().isValid() == false) ||
+            (e->oldSize().isValid() == false))
+    {
+        return;
+    }
 
     w = e->size().width();
     h = e->size().height();
+    oldw = e->oldSize().width();
+    oldh = e->oldSize().height();
+
+    wratio = (qreal)w/(qreal)oldw;
+    hratio = (qreal)h/(qreal)oldh;
+
 
     m_resizeTimer.start( 500 );
     QMainWindow::resizeEvent(e);
-    ui->tabWidget->resize(w*0.98, h*0.90);
-    ui->ImageDisplay->resize(w*0.98, h*0.70);
-
+    //ui->tabWidget->resize(w*0.98, h*0.90);
+    //ui->ImageDisplay->resize(w*0.98, h*0.70);
+    neww = (int)((qreal)ui->tabWidget->size().width() * wratio);
+    newh = (int)((qreal)ui->tabWidget->size().height() * hratio);
+    //ui->tabWidget->resize(neww, newh);
+    neww = (int)((qreal)ui->ImageDisplay->size().width() * wratio);
+    newh = (int)((qreal)ui->ImageDisplay->size().height() * hratio);
+    //ui->ImageDisplay->resize(neww, newh);
+    relocateWidget(ui->tabWidget, QSizeF(wratio, hratio));
+    relocateWidget(ui->ImageDisplay, QSizeF(wratio, hratio));
+    relocateWidget(ui->SnapshotList0, QSizeF(wratio, hratio));
+    relocateWidget(ui->videoElapsed, QSizeF(wratio, hratio));
     QRect geometry = ui->ImageDisplay->geometry();
 
 }
 
 void MainWindow::resizeDone()
 {
-    QRect geometry = ui->ImageDisplay->geometry();
-    int w = ui->videoElapsed->width();
-    //ui->videoElapsed->move(geometry.right()-w-10, geometry.bottom()+10);
-    ui->videoElapsed->move(geometry.center().x(), geometry.bottom()+10);
-    //ui->videoElapsed->move(geometry.right()-400, geometry.bottom()+10);
-    ui->PlayBtn->move(geometry.left(), geometry.bottom()+10);
 }
 
 void MainWindow::handleSnapshotBtn()
@@ -120,6 +150,28 @@ void MainWindow::handleSnapshotBtn()
     m_snapshotFrames.push_back(m_currentVFrame);
     QString title = m_snapshotsTabText + "(" + QString::number(m_snapshotFrames.size()) + ")";
     ui->tabWidget->setTabText(1, title);
+
+    QIcon icon;
+    QPixmap pixMap;
+
+
+    QImage imdisplay((uchar*)m_currentVFrame.data, m_currentVFrame.cols, m_currentVFrame.rows, m_currentVFrame.step, QImage::Format_RGB888);
+    icon.addPixmap(QPixmap::fromImage(imdisplay));
+    QListWidgetItem *item = new QListWidgetItem(icon,NULL);
+
+    QSize iconSize;
+    //ui->SnapshotList0->setSpacing(0);
+    //iconSize.setWidth(ui->SnapshotList0->width()-ui->SnapshotList0->spacing()*2);
+    iconSize.setWidth(ui->SnapshotList0->maximumViewportSize().width());
+    printf("maximumViewportSize = %d\n", ui->SnapshotList0->maximumViewportSize().width());
+    printf("size = %d\n", ui->SnapshotList0->size().width());
+
+    ui->SnapshotList0->setMinimumWidth(iconSize.width());
+    iconSize.setWidth(ui->SnapshotList0->width()-ui->SnapshotList0->spacing()*2);
+    iconSize.setHeight((qreal)ui->SnapshotList0->height() * ((qreal)m_currentVFrame.cols/(qreal)m_currentVFrame.rows));
+    ui->SnapshotList0->setIconSize(iconSize);
+
+    ui->SnapshotList0->addItem(item);
 }
 
 void MainWindow::handlePlayBtn()
