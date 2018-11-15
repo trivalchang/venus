@@ -125,19 +125,10 @@ void MainWindow::resizeEvent( QResizeEvent *e )
 
     m_resizeTimer.start( 500 );
     QMainWindow::resizeEvent(e);
-    //ui->tabWidget->resize(w*0.98, h*0.90);
-    //ui->ImageDisplay->resize(w*0.98, h*0.70);
-    neww = (int)((qreal)ui->tabWidget->size().width() * wratio);
-    newh = (int)((qreal)ui->tabWidget->size().height() * hratio);
-    //ui->tabWidget->resize(neww, newh);
-    neww = (int)((qreal)ui->ImageDisplay->size().width() * wratio);
-    newh = (int)((qreal)ui->ImageDisplay->size().height() * hratio);
-    //ui->ImageDisplay->resize(neww, newh);
     relocateWidget(ui->tabWidget, QSizeF(wratio, hratio));
     relocateWidget(ui->ImageDisplay, QSizeF(wratio, hratio));
     relocateWidget(ui->SnapshotList0, QSizeF(wratio, hratio));
     relocateWidget(ui->videoElapsed, QSizeF(wratio, hratio));
-    QRect geometry = ui->ImageDisplay->geometry();
 
 }
 
