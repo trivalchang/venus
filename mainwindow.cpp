@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QResizeEvent>
+#include <imageviewlistwidgetitem.h>
 
 using namespace cv;
 
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_snapshotsTabText = ui->tabWidget->tabText(1);
     ui->SnapshotList0->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->SnapshotList1->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    connect(ui->SnapshotList1, SIGNAL(itemPressed(QListWidgetItem*)),this, SLOT(onSnapshotViewItemPressed(QListWidgetItem*)));
 }
 
 MainWindow::~MainWindow()
@@ -105,7 +109,7 @@ void MainWindow::relocateWidget(QWidget *widget, QSizeF ratio)
 
 void MainWindow::resizeEvent( QResizeEvent *e )
 {
-    int w, h, oldw, oldh, neww, newh;
+    int w, h, oldw, oldh;
     qreal wratio, hratio;
 
     if ((e->size().isValid() == false) ||
@@ -119,8 +123,8 @@ void MainWindow::resizeEvent( QResizeEvent *e )
     oldw = e->oldSize().width();
     oldh = e->oldSize().height();
 
-    wratio = (qreal)w/(qreal)oldw;
-    hratio = (qreal)h/(qreal)oldh;
+    wratio = static_cast<qreal>(w)/static_cast<qreal>(oldw);
+    hratio = static_cast<qreal>(h)/static_cast<qreal>(oldh);
 
 
     m_resizeTimer.start( 500 );
@@ -130,6 +134,8 @@ void MainWindow::resizeEvent( QResizeEvent *e )
     relocateWidget(ui->SnapshotList0, QSizeF(wratio, hratio));
     relocateWidget(ui->videoElapsed, QSizeF(wratio, hratio));
 
+    relocateWidget(ui->ImageEdit, QSizeF(wratio, hratio));
+    relocateWidget(ui->SnapshotList1, QSizeF(wratio, hratio));
 }
 
 void MainWindow::resizeDone()
@@ -138,7 +144,7 @@ void MainWindow::resizeDone()
 
 void MainWindow::handleSnapshotBtn()
 {
-    m_snapshotFrames.push_back(m_currentVFrame);
+    m_snapshotFrames.push_back(m_currentVFrame.clone());
     QString title = m_snapshotsTabText + "(" + QString::number(m_snapshotFrames.size()) + ")";
     ui->tabWidget->setTabText(1, title);
 
@@ -146,23 +152,31 @@ void MainWindow::handleSnapshotBtn()
     QPixmap pixMap;
 
 
-    QImage imdisplay((uchar*)m_currentVFrame.data, m_currentVFrame.cols, m_currentVFrame.rows, m_currentVFrame.step, QImage::Format_RGB888);
+    QImage imdisplay(static_cast<uchar*>(m_currentVFrame.data),
+                     m_currentVFrame.cols,
+                     m_currentVFrame.rows,
+                     static_cast<int>(m_currentVFrame.step),
+                     QImage::Format_RGB888);
     icon.addPixmap(QPixmap::fromImage(imdisplay));
-    QListWidgetItem *item = new QListWidgetItem(icon,NULL);
+    ImageViewListWidgetItem *item = new ImageViewListWidgetItem(icon, nullptr, m_snapshotFrames.size()-1);
+    ImageViewListWidgetItem *item1 = new ImageViewListWidgetItem(icon, nullptr, m_snapshotFrames.size()-1);
 
     QSize iconSize;
-    //ui->SnapshotList0->setSpacing(0);
-    //iconSize.setWidth(ui->SnapshotList0->width()-ui->SnapshotList0->spacing()*2);
+
     iconSize.setWidth(ui->SnapshotList0->maximumViewportSize().width());
-    printf("maximumViewportSize = %d\n", ui->SnapshotList0->maximumViewportSize().width());
-    printf("size = %d\n", ui->SnapshotList0->size().width());
 
     ui->SnapshotList0->setMinimumWidth(iconSize.width());
     iconSize.setWidth(ui->SnapshotList0->width()-ui->SnapshotList0->spacing()*2);
-    iconSize.setHeight((qreal)ui->SnapshotList0->height() * ((qreal)m_currentVFrame.cols/(qreal)m_currentVFrame.rows));
+    iconSize.setHeight(static_cast<int>(static_cast<qreal>(ui->SnapshotList0->height()) * \
+                        (static_cast<qreal>(m_currentVFrame.cols)/static_cast<qreal>(m_currentVFrame.rows))));
     ui->SnapshotList0->setIconSize(iconSize);
 
     ui->SnapshotList0->addItem(item);
+
+    ui->SnapshotList1->setIconSize(iconSize);
+
+    ui->SnapshotList1->addItem(item1);
+
 }
 
 void MainWindow::handlePlayBtn()
@@ -182,9 +196,10 @@ void MainWindow::updateVideoFrame()
         return;
     }
     m_videoCap >> m_currentVFrame;
+    cv::cvtColor(m_currentVFrame,m_currentVFrame,COLOR_BGR2RGB);
     if (!m_currentVFrame.empty())
     {
-        displayImage(m_currentVFrame);
+        displayImage(m_currentVFrame, ui->ImageDisplay);
         m_videoElapsedTime = m_videoElapsedTime.addMSecs(m_videoStartTime.elapsed() - m_videoElapsedInMs);
         m_videoElapsedInMs = m_videoStartTime.elapsed();
         ui->videoElapsed->setText(m_videoElapsedTime.toString("hh:mm:ss"));
@@ -192,33 +207,49 @@ void MainWindow::updateVideoFrame()
     }
 }
 
-void MainWindow::displayImage(cv::Mat img)
+void MainWindow::displayImage(cv::Mat img, ImageDisplayLabel *imgDisplayLabel)
 {
+    QMutexLocker locker(&m_displayImgMutex);
+
+    printf("++++++++++++++\n");
     int newW = 0, newH = 0;
     float imgRatio, displayRatio;
 
     imgRatio = float(img.cols)/float(img.rows);
-    displayRatio = float(ui->ImageDisplay->size().width())/float(ui->ImageDisplay->size().height());
+    displayRatio = float(imgDisplayLabel->size().width())/float(imgDisplayLabel->size().height());
     if (imgRatio >= displayRatio)    // image ratio is wider than display widget
     {
-        newW = ui->ImageDisplay->size().width();
+        newW = imgDisplayLabel->size().width();
         newH = int(float(img.rows) * float(newW)/float(img.cols));
     }
     else if (imgRatio < displayRatio)
     {
-        newH = ui->ImageDisplay->size().height();
+        newH = imgDisplayLabel->size().height();
         newW = int(float(img.cols) * float(newH)/float(img.rows));
     }
 
-    if ((newW != ui->ImageDisplay->size().width()) ||
-            (newH != ui->ImageDisplay->size().height()))
+    if ((newW != imgDisplayLabel->size().width()) ||
+            (newH != imgDisplayLabel->size().height()))
     {
-        ui->ImageDisplay->resize(newW, newH);
+        imgDisplayLabel->resize(newW, newH);
     }
 
     cv::resize(img, img, Size(newW, newH), 0, 0, INTER_LINEAR);
-    cv::cvtColor(img,img,COLOR_BGR2RGB);
+    //cv::cvtColor(img,img,COLOR_BGR2RGB);
     QImage imdisplay((uchar*)img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
 
-    ui->ImageDisplay->displayImage(imdisplay);
+    imgDisplayLabel->displayImage(imdisplay);
+    printf("----------\n");
+}
+
+
+void MainWindow::onSnapshotViewItemPressed(QListWidgetItem *item)
+{
+    ImageViewListWidgetItem *item1 = dynamic_cast<ImageViewListWidgetItem *>(item);
+    if (item1 == nullptr)
+    {
+        printf("unable to cast\n");
+        return;
+    }
+    displayImage(m_snapshotFrames[item1->index()], ui->ImageEdit);
 }

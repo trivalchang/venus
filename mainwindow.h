@@ -6,11 +6,13 @@
 #include <QTime>
 #include <QCursor>
 #include <QVector>
+#include <QListWidgetItem>
+#include <QMutex>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
-
+#include <imagedisplaylabel.h>
 namespace Ui {
 class MainWindow;
 }
@@ -22,7 +24,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void displayImage(cv::Mat img);
+    void displayImage(cv::Mat img, ImageDisplayLabel *imgDisplayLabel);
     void startPlay(QString fname);
     void endPlay();
     void resizeEvent( QResizeEvent *e );
@@ -34,6 +36,7 @@ private slots:
     void handlePlayBtn();
     void updateVideoFrame();
     void resizeDone();
+    void onSnapshotViewItemPressed(QListWidgetItem *item);
 private:
     void relocateWidget(QWidget *widget, QSizeF ratio);
     Ui::MainWindow *ui;
@@ -49,6 +52,9 @@ private:
     int m_videoElapsedInMs;
     QVector<cv::Mat> m_snapshotFrames;
     QString m_snapshotsTabText;
+
+    QMutex m_displayImgMutex;
+
 };
 
 #endif // MAINWINDOW_H

@@ -31,11 +31,15 @@ QT_CONFIG -= no-pkg-config
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    imagedisplaylabel.cpp
+    imagedisplaylabel.cpp \
+    imageviewlistwidget.cpp \
+    imageviewlistwidgetitem.cpp
 
 HEADERS += \
         mainwindow.h \
-    imagedisplaylabel.h
+    imagedisplaylabel.h \
+    imageviewlistwidget.h \
+    imageviewlistwidgetitem.h
 
 FORMS += \
         mainwindow.ui

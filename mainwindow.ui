@@ -142,13 +142,51 @@
      <attribute name="title">
       <string>Snapshots</string>
      </attribute>
-     <widget class="ImageDisplayLabel" name="Snapshots">
+     <widget class="ImageViewListWidget" name="SnapshotList1">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>10</x>
         <y>10</y>
-        <width>551</width>
-        <height>351</height>
+        <width>91</width>
+        <height>421</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QListWidget::item
+{
+    background: rgb(255,255,255); 
+}
+QListWidget::item:selected
+{
+    background: rgb(128,128,255);
+}</string>
+      </property>
+      <property name="lineWidth">
+       <number>3</number>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="flow">
+       <enum>QListView::TopToBottom</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="selectionRectVisible">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="ImageDisplayLabel" name="ImageEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>10</y>
+        <width>591</width>
+        <height>431</height>
        </rect>
       </property>
       <property name="font">
@@ -166,27 +204,6 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QWidget" name="formLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
-        <y>50</y>
-        <width>160</width>
-        <height>80</height>
-       </rect>
-      </property>
-      <layout class="QFormLayout" name="formLayout"/>
-     </widget>
-     <widget class="QListWidget" name="listWidget">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>391</y>
-        <width>641</width>
-        <height>81</height>
-       </rect>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -201,7 +218,7 @@
      <x>0</x>
      <y>0</y>
      <width>827</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -251,6 +268,11 @@
    <class>ImageDisplayLabel</class>
    <extends>QLabel</extends>
    <header>imagedisplaylabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ImageViewListWidget</class>
+   <extends>QListWidget</extends>
+   <header>imageviewlistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

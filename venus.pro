@@ -31,14 +31,20 @@ PKGCONFIG += opencv
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    imagedisplaylabel.cpp
+    imagedisplaylabel.cpp \
+    imageviewlistwidgetitem.cpp \
+    imageviewlistwidget.cpp
 
 HEADERS += \
         mainwindow.h \
-    imagedisplaylabel.h
+    imagedisplaylabel.h \
+    imageviewlistwidgetitem.h \
+    imageviewlistwidget.h
 
 FORMS += \
         mainwindow.ui
+
+QMAKE_CXXFLAGS += -Wno-old-style-cast
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
