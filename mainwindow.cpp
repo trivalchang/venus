@@ -4,7 +4,7 @@
 #include <QFileDialog>
 #include <QResizeEvent>
 #include <imageviewlistwidgetitem.h>
-
+#include <baseapi.h>
 using namespace cv;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,11 +14,19 @@ MainWindow::MainWindow(QWidget *parent) :
     m_videoPaued(false)
 {
     ui->setupUi(this);
+
+    ui->ImageDisplay->enableDrawROI(false);
+    ui->ImageEdit->enableDrawROI(false);
+
+    ui->typeComboBox->addItem("Words");
+    ui->typeComboBox->addItem("Image");
+
     videoTimer = new QTimer(this);
     connect(ui->OpenCameraBtn, SIGNAL (released()),this, SLOT (handleOpenCameraBtn()));
     connect(ui->OpenFileBtn, SIGNAL (released()),this, SLOT (handleOpenFileBtn()));
     connect(ui->PlayBtn, SIGNAL (released()),this, SLOT (handlePlayBtn()));
     connect(ui->SnapshotBtn, SIGNAL (released()),this, SLOT (handleSnapshotBtn()));
+    connect(ui->saveBtn, SIGNAL (released()),this, SLOT (handleSaveBtn()));
 
     connect(videoTimer, SIGNAL(timeout()),this, SLOT(updateVideoFrame()));
     QTimer::singleShot(500, this, SLOT(showMaximized()));
@@ -136,6 +144,12 @@ void MainWindow::resizeEvent( QResizeEvent *e )
 
     relocateWidget(ui->ImageEdit, QSizeF(wratio, hratio));
     relocateWidget(ui->SnapshotList1, QSizeF(wratio, hratio));
+    relocateWidget(ui->idLabel, QSizeF(wratio, hratio));
+    relocateWidget(ui->idEdit, QSizeF(wratio, hratio));
+    relocateWidget(ui->typeLabel, QSizeF(wratio, hratio));
+    relocateWidget(ui->typeComboBox, QSizeF(wratio, hratio));
+    relocateWidget(ui->saveBtn, QSizeF(wratio, hratio));
+    relocateWidget(ui->OcrImageDisplay, QSizeF(wratio, hratio));
 }
 
 void MainWindow::resizeDone()
@@ -161,6 +175,14 @@ void MainWindow::handleSnapshotBtn()
     ImageViewListWidgetItem *item = new ImageViewListWidgetItem(icon, nullptr, m_snapshotFrames.size()-1);
     ImageViewListWidgetItem *item1 = new ImageViewListWidgetItem(icon, nullptr, m_snapshotFrames.size()-1);
 
+    item->setTime(m_videoElapsedTime);
+    item1->setTime(m_videoElapsedTime);
+
+    if (m_videoElapsedTime.minute() >= 1)
+    {
+        printf("m_videoElapsedTime = %d\n", m_videoElapsedTime.minute());
+    }
+
     QSize iconSize;
 
     iconSize.setWidth(ui->SnapshotList0->maximumViewportSize().width());
@@ -176,6 +198,8 @@ void MainWindow::handleSnapshotBtn()
     ui->SnapshotList1->setIconSize(iconSize);
 
     ui->SnapshotList1->addItem(item1);
+
+    ui->ImageEdit->enableDrawROI(true);
 
 }
 
@@ -199,49 +223,13 @@ void MainWindow::updateVideoFrame()
     cv::cvtColor(m_currentVFrame,m_currentVFrame,COLOR_BGR2RGB);
     if (!m_currentVFrame.empty())
     {
-        displayImage(m_currentVFrame, ui->ImageDisplay);
+        ui->ImageDisplay->displayImage(m_currentVFrame);
         m_videoElapsedTime = m_videoElapsedTime.addMSecs(m_videoStartTime.elapsed() - m_videoElapsedInMs);
         m_videoElapsedInMs = m_videoStartTime.elapsed();
         ui->videoElapsed->setText(m_videoElapsedTime.toString("hh:mm:ss"));
         ui->videoElapsed->repaint();
     }
 }
-
-void MainWindow::displayImage(cv::Mat img, ImageDisplayLabel *imgDisplayLabel)
-{
-    QMutexLocker locker(&m_displayImgMutex);
-
-    printf("++++++++++++++\n");
-    int newW = 0, newH = 0;
-    float imgRatio, displayRatio;
-
-    imgRatio = float(img.cols)/float(img.rows);
-    displayRatio = float(imgDisplayLabel->size().width())/float(imgDisplayLabel->size().height());
-    if (imgRatio >= displayRatio)    // image ratio is wider than display widget
-    {
-        newW = imgDisplayLabel->size().width();
-        newH = int(float(img.rows) * float(newW)/float(img.cols));
-    }
-    else if (imgRatio < displayRatio)
-    {
-        newH = imgDisplayLabel->size().height();
-        newW = int(float(img.cols) * float(newH)/float(img.rows));
-    }
-
-    if ((newW != imgDisplayLabel->size().width()) ||
-            (newH != imgDisplayLabel->size().height()))
-    {
-        imgDisplayLabel->resize(newW, newH);
-    }
-
-    cv::resize(img, img, Size(newW, newH), 0, 0, INTER_LINEAR);
-    //cv::cvtColor(img,img,COLOR_BGR2RGB);
-    QImage imdisplay((uchar*)img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
-
-    imgDisplayLabel->displayImage(imdisplay);
-    printf("----------\n");
-}
-
 
 void MainWindow::onSnapshotViewItemPressed(QListWidgetItem *item)
 {
@@ -251,5 +239,29 @@ void MainWindow::onSnapshotViewItemPressed(QListWidgetItem *item)
         printf("unable to cast\n");
         return;
     }
-    displayImage(m_snapshotFrames[item1->index()], ui->ImageEdit);
+    ui->ImageEdit->displayImage(m_snapshotFrames[item1->index()]);
+    ui->idEdit->setText(QString::number(item1->hour()) + "_" + QString::number(item1->minute()) + "_" + QString::number(item1->second()));
+}
+
+void MainWindow::handleSaveBtn()
+{
+    QRect roi;
+
+    ui->ImageEdit->getROI(roi);
+    cv::Mat gray = m_snapshotFrames[0](cv::Rect(roi.x(), roi.y(), roi.width(), roi.height())) ;
+
+    //ui->OcrImageDisplay
+
+    cv::cvtColor(gray, gray, COLOR_RGB2GRAY);
+    tesseract::TessBaseAPI tess;
+    tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
+    //tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+    tess.SetImage((uchar*)gray.data, gray.cols, gray.rows, 1, gray.cols);
+
+    // Get the text
+    char* out = tess.GetUTF8Text();
+
+    printf("OCR: %s\n", out);
+
+    ui->OcrImageDisplay->displayImage(gray);
 }

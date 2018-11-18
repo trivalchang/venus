@@ -24,7 +24,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void displayImage(cv::Mat img, ImageDisplayLabel *imgDisplayLabel);
     void startPlay(QString fname);
     void endPlay();
     void resizeEvent( QResizeEvent *e );
@@ -37,6 +36,7 @@ private slots:
     void updateVideoFrame();
     void resizeDone();
     void onSnapshotViewItemPressed(QListWidgetItem *item);
+    void handleSaveBtn();
 private:
     void relocateWidget(QWidget *widget, QSizeF ratio);
     Ui::MainWindow *ui;
@@ -52,9 +52,6 @@ private:
     int m_videoElapsedInMs;
     QVector<cv::Mat> m_snapshotFrames;
     QString m_snapshotsTabText;
-
-    QMutex m_displayImgMutex;
-
 };
 
 #endif // MAINWINDOW_H

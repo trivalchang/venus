@@ -27,6 +27,7 @@ CONFIG += c++11
 QT_CONFIG -= no-pkg-config
 CONFIG  += link_pkgconfig
 PKGCONFIG += opencv
+PKGCONFIG += tesseract
 
 SOURCES += \
         main.cpp \

@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QPainter>
 #include <QMouseEvent>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
 
 class ImageDisplayLabel:public QLabel
 {
@@ -15,6 +18,8 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
     void displayImage(QImage imgToDraw);
     void enableDrawROI(bool benable);
+    void getROI(QRect &rect);
+    void displayImage(cv::Mat img);
 protected:
     void paintEvent(QPaintEvent *event);
 private:
