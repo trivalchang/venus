@@ -204,21 +204,11 @@ QListWidget::item:selected
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLineEdit" name="idEdit">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>460</y>
-        <width>101</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="idLabel">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>440</y>
+        <x>740</x>
+        <y>80</y>
         <width>31</width>
         <height>16</height>
        </rect>
@@ -235,14 +225,14 @@ QListWidget::item:selected
        <string>ID</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="typeLabel">
       <property name="geometry">
        <rect>
-        <x>250</x>
-        <y>440</y>
+        <x>740</x>
+        <y>130</y>
         <width>41</width>
         <height>16</height>
        </rect>
@@ -259,15 +249,15 @@ QListWidget::item:selected
        <string>Type</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QComboBox" name="typeComboBox">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>450</y>
-        <width>111</width>
+        <x>735</x>
+        <y>140</y>
+        <width>81</width>
         <height>41</height>
        </rect>
       </property>
@@ -275,9 +265,9 @@ QListWidget::item:selected
      <widget class="QPushButton" name="saveBtn">
       <property name="geometry">
        <rect>
-        <x>510</x>
-        <y>450</y>
-        <width>114</width>
+        <x>733</x>
+        <y>240</y>
+        <width>81</width>
         <height>51</height>
        </rect>
       </property>
@@ -288,10 +278,10 @@ QListWidget::item:selected
      <widget class="ImageDisplayLabel" name="OcrImageDisplay">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>430</y>
-        <width>161</width>
-        <height>61</height>
+        <x>730</x>
+        <y>10</y>
+        <width>81</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="font">
@@ -307,6 +297,53 @@ QListWidget::item:selected
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="OcrResultLabel">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>180</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>OCR Result</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="OcrResultEdit">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>200</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="idEdit">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>100</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
       </property>
      </widget>
     </widget>

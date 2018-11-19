@@ -150,6 +150,8 @@ void MainWindow::resizeEvent( QResizeEvent *e )
     relocateWidget(ui->typeComboBox, QSizeF(wratio, hratio));
     relocateWidget(ui->saveBtn, QSizeF(wratio, hratio));
     relocateWidget(ui->OcrImageDisplay, QSizeF(wratio, hratio));
+    relocateWidget(ui->OcrResultEdit, QSizeF(wratio, hratio));
+    relocateWidget(ui->OcrResultLabel, QSizeF(wratio, hratio));
 }
 
 void MainWindow::resizeDone()
@@ -248,14 +250,24 @@ void MainWindow::handleSaveBtn()
     QRect roi;
 
     ui->ImageEdit->getROI(roi);
-    cv::Mat gray = m_snapshotFrames[0](cv::Rect(roi.x(), roi.y(), roi.width(), roi.height())) ;
+    cv::Mat gray = m_snapshotFrames[0];
+    float ratioH, ratioW;
+
+    ratioW = float(gray.cols)/float(ui->ImageEdit->width());
+    ratioH = float(gray.rows)/float(ui->ImageEdit->height());
+    cv::Rect rect(int(float(roi.x()) * ratioW),
+               int(float(roi.y()) * ratioH),
+               int(float(roi.width()) * ratioW),
+               int(float(roi.height()) * ratioH));
+
+    gray = gray(rect) ;
 
     //ui->OcrImageDisplay
 
     cv::cvtColor(gray, gray, COLOR_RGB2GRAY);
     tesseract::TessBaseAPI tess;
-    tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
-    //tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+    tess.Init(NULL, "chi_tra", tesseract::OEM_DEFAULT);
+    tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
     tess.SetImage((uchar*)gray.data, gray.cols, gray.rows, 1, gray.cols);
 
     // Get the text
@@ -264,4 +276,6 @@ void MainWindow::handleSaveBtn()
     printf("OCR: %s\n", out);
 
     ui->OcrImageDisplay->displayImage(gray);
+    ui->OcrResultEdit->setText(out);
+    ui->ImageEdit->enableDrawROI(true);
 }

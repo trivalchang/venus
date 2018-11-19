@@ -67,6 +67,13 @@ void ImageDisplayLabel::displayImage(QImage imgToDraw)
 
 void ImageDisplayLabel::enableDrawROI(bool benable)
 {
+    if (benable == true)
+    {
+        QPoint invalid(-1, -1);
+
+        m_ROIStart = invalid;
+        m_ROIEnd = invalid;
+    }
     setMouseTracking(benable);
     m_bDrawROI = benable;
 }
