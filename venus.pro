@@ -34,13 +34,15 @@ SOURCES += \
         mainwindow.cpp \
     imagedisplaylabel.cpp \
     imageviewlistwidgetitem.cpp \
-    imageviewlistwidget.cpp
+    imageviewlistwidget.cpp \
+    patternsave.cpp
 
 HEADERS += \
         mainwindow.h \
     imagedisplaylabel.h \
     imageviewlistwidgetitem.h \
-    imageviewlistwidget.h
+    imageviewlistwidget.h \
+    patternsave.h
 
 FORMS += \
         mainwindow.ui

@@ -13,6 +13,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <imagedisplaylabel.h>
+#include <patternsave.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -52,6 +54,7 @@ private:
     int m_videoElapsedInMs;
     QVector<cv::Mat> m_snapshotFrames;
     QString m_snapshotsTabText;
+    patternSave m_patternSave;
 };
 
 #endif // MAINWINDOW_H

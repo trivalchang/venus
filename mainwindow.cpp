@@ -5,6 +5,10 @@
 #include <QResizeEvent>
 #include <imageviewlistwidgetitem.h>
 #include <baseapi.h>
+
+#include <QtDebug>
+
+
 using namespace cv;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -262,20 +266,29 @@ void MainWindow::handleSaveBtn()
 
     gray = gray(rect) ;
 
-    //ui->OcrImageDisplay
-
+#if 1
     cv::cvtColor(gray, gray, COLOR_RGB2GRAY);
     tesseract::TessBaseAPI tess;
-    tess.Init(NULL, "chi_tra", tesseract::OEM_DEFAULT);
-    tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+    if (tess.Init("G:\\venus\\release\\tessdata", "eng", tesseract::OEM_DEFAULT) == -1)
+    {
+        printf("Unable to init\n");
+        qInfo() << "Unable to init\n";
+        ui->OcrResultEdit->setText("ERROR");
+        return;
+    }
+    //tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
     tess.SetImage((uchar*)gray.data, gray.cols, gray.rows, 1, gray.cols);
 
+    //printf("I am here\n");
     // Get the text
     char* out = tess.GetUTF8Text();
 
-    printf("OCR: %s\n", out);
+    //printf("OCR: %s\n", out);
 
     ui->OcrImageDisplay->displayImage(gray);
     ui->OcrResultEdit->setText(out);
     ui->ImageEdit->enableDrawROI(true);
+    m_patternSave.addItem(out, patternSave::PATTERN_TYPE_OCR_TEXT);
+    m_patternSave.save();
+#endif
 }
