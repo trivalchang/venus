@@ -19,5 +19,6 @@ void patternSave::save()
     while (m_items.isEmpty() == false)
     {
         item = m_items.first();
+        m_items.removeFirst();
     }
 }

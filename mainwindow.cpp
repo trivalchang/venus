@@ -269,21 +269,21 @@ void MainWindow::handleSaveBtn()
 #if 1
     cv::cvtColor(gray, gray, COLOR_RGB2GRAY);
     tesseract::TessBaseAPI tess;
-    if (tess.Init("G:\\venus\\release\\tessdata", "eng", tesseract::OEM_DEFAULT) == -1)
+    if (tess.Init(TESSERACT_DATA, "eng", tesseract::OEM_DEFAULT) == -1)
     {
         printf("Unable to init\n");
         qInfo() << "Unable to init\n";
         ui->OcrResultEdit->setText("ERROR");
         return;
     }
-    //tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+    tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
     tess.SetImage((uchar*)gray.data, gray.cols, gray.rows, 1, gray.cols);
 
     //printf("I am here\n");
     // Get the text
     char* out = tess.GetUTF8Text();
 
-    //printf("OCR: %s\n", out);
+    printf("OCR: %s\n", out);
 
     ui->OcrImageDisplay->displayImage(gray);
     ui->OcrResultEdit->setText(out);

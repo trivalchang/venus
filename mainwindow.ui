@@ -255,20 +255,20 @@ QListWidget::item:selected
      <widget class="QComboBox" name="typeComboBox">
       <property name="geometry">
        <rect>
-        <x>735</x>
-        <y>140</y>
-        <width>81</width>
-        <height>41</height>
+        <x>740</x>
+        <y>150</y>
+        <width>71</width>
+        <height>21</height>
        </rect>
       </property>
      </widget>
      <widget class="QPushButton" name="saveBtn">
       <property name="geometry">
        <rect>
-        <x>733</x>
-        <y>240</y>
-        <width>81</width>
-        <height>51</height>
+        <x>740</x>
+        <y>230</y>
+        <width>71</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
@@ -360,7 +360,7 @@ QListWidget::item:selected
      <x>0</x>
      <y>0</y>
      <width>827</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
